@@ -7,7 +7,8 @@ function rectangleO:new(x,y,w,h)
   table.insert(rectangles, newRectangle)
 end
 
-function rectangleO:draw()
+function rectangleO:draw(color)
+  love.graphics.setColor(1,0,0)
   love.graphics.rectangle("fill",
   self.x*windowWidth,
   self.y*windowHeight,

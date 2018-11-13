@@ -36,5 +36,6 @@ function playerO:update()
 end
 
 function playerO:draw()
+  love.graphics.setColor(0,1,0)
   love.graphics.rectangle("fill",self.x*windowWidth,self.y*windowHeight,4,4)
 end

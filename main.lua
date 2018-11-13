@@ -6,7 +6,7 @@ function love.load()
   love.window.setMode(0, 0)
   --array resets
   rectangles = {}
-  players = {playerO:new(1,randomGun(),0.5,1,4)}
+  players = {playerO:new(1,randomGun(),0.001,1,4)}
   rectangleO:new(0.5, 0.5, 0.2, 0.2)
   windowWidth, windowHeight = love.window.getMode()
 end
@@ -14,6 +14,7 @@ end
 function love.update()
   mouseX, mouseY = love.mouse.getPosition()
   escape()
+  restart()
   for i=1, #players do
     players[i]:update()
   end
@@ -26,10 +27,10 @@ function love.keyPressed(key)
 end
 
 function love.draw()
-  for i=1, #players do
-    players[i]:draw()
-  end
   for i=1, #rectangles do
     rectangles[i]:draw()
+  end
+  for i=1, #players do
+    players[i]:draw()
   end
 end

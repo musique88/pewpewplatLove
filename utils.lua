@@ -1,3 +1,9 @@
+function restart()
+  if love.keyboard.isDown("r") then
+    love.load()
+  end
+end
+
 function randomGun(gunNumber)
   local gun = love.math.random(gunNumber)
   if gun == 1 then
