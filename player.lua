@@ -22,8 +22,6 @@ end
 
 function playerO:update()
   --inputs
-  local oldPosX = self.x
-  local oldPosY = self.y
   if self.pnum == 1 then
     if love.keyboard.isDown("left") then
       if self.a.x >= -self.maxSpeed.x then
@@ -53,23 +51,10 @@ function playerO:update()
     self.x = self.x + self.a.x
     self.y = self.y + self.a.y
     --collision
-    local colCheck = {
-      vectorO:new(self.x,self.y),
-      vectorO:new(self.x+self.w, self.y),
-      vectorO:new(self.x+self.w, self.y+self.h),
-      vectorO:new(self.x,self.y+self.h)
-    }
+    local boundingBox = rectangleO:newReturn(self.x,self.y,self.w,self.h)
     for i=1, #rectangles do
-      for j=1, #colCheck do
-        if colCheck[j]:isInRectangle(rectangles[i]) then
-          if colCheck[j]:isInXRectangle(rectangles[i]) then
-            self.x = oldPosX
-            self.isGrounded = true
-          elseif colCheck[j]:isInYRectangle(rectangles[i]) then
-            self.y = oldPosY
-            self.isGrounded = true
-          end
-        end
+      if CheckCollision(rectangles[i],boundingBox)then
+        
       end
     end
   end
