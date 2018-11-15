@@ -47,16 +47,20 @@ function playerO:update()
         self.a.y = self.maxSpeed.y
       end
     end
-    --actually moving
-    self.x = self.x + self.a.x
-    self.y = self.y + self.a.y
+    
     --collision
     local boundingBox = rectangleO:newReturn(self.x,self.y,self.w,self.h)
     for i=1, #rectangles do
       if CheckCollision(rectangles[i],boundingBox)then
-        
+        self.isGrounded = true
+      else
+        self.isGrounded = false
       end
     end
+
+    --actually moving
+    self.x = self.x + self.a.x
+    self.y = self.y + self.a.y
   end
 end
 
