@@ -11,9 +11,9 @@ function playerO:new(pnum,gunType,xSpeed,maxXSpeed,maxYSpeed,grav,jumpSpeed,x,y,
     newPlayer.xSpeed = xSpeed or 0.5
     newPlayer.pnum = pnum or 1
     newPlayer.gunType = gunType or randomGun(1)
-    newPlayer.maxSpeed = vectorO:new(maxXSpeed or 5,maxYSpeed or 5)
+    newPlayer.maxSpeed = vectorO:new(maxXSpeed or 10,maxYSpeed or 10)
     newPlayer.grav = grav or 1
-    newPlayer.jumpSpeed = jumpSpeed or 5
+    newPlayer.jumpSpeed = jumpSpeed or 40
     newPlayer.isGrounded = false
     newPlayer.a = vectorO:new(0,0)
   setmetatable(newPlayer, playerO)
@@ -21,6 +21,8 @@ function playerO:new(pnum,gunType,xSpeed,maxXSpeed,maxYSpeed,grav,jumpSpeed,x,y,
 end
 
 function playerO:update()
+  local oldX = self.x
+  local oldY = self.y
   --inputs
   if self.pnum == 1 then
     if love.keyboard.isDown("left") then
@@ -36,7 +38,7 @@ function playerO:update()
     end
     if self.isGrounded then
       if love.keyboard.isDown("up") then
-
+        self.a.y = self.a.y - self.jumpSpeed
       end
     else
       if love.keyboard.isDown("down") then
@@ -48,26 +50,51 @@ function playerO:update()
       end
     end
 
-    --collision
-    local collisionBox = {
-      --top left
-      tl = vectorO:new(self.x,self.y),
-      --top right
-      tr = vectorO:new(self.x + self.w, self.y),
-      --bottom left
-      bl = vectorO:new(self.x, self.y + self.h),
-      --bottom right
-      br = vectorO:new(self.x + self.w, self.y + self.h)
-    }
-    for i=1, #rectangles do
-      if collisionBox.bl:isInRectangle(rectangles[i]) and collisionBox.br:isInRectangle(rectangles[i]) then
-      
-      end
-    end
-
     --actually moving
     self.x = self.x + self.a.x
     self.y = self.y + self.a.y
+
+    --collision
+    local collisionBox = assignCollisionBox(self)
+    local lastCollisionChecked = ""
+    for i=1, #rectangles do
+      --bottom checking
+      while collisionBox.bl:isInRectangle(rectangles[i]) and
+            collisionBox.br:isInRectangle(rectangles[i]) do
+        self.y = self.y - 1
+        collisionBox = assignCollisionBox(self)
+        lastCollisionChecked = "bottom"
+      end
+      --top checking
+      while collisionBox.tr:isInRectangle(rectangles[i]) and
+            collisionBox.tl:isInRectangle(rectangles[i]) do
+        self.x = self.x + 1
+        collisionBox = assignCollisionBox(self)
+        lastCollisionChecked = "top"
+      end
+      --right checking
+      while collisionBox.tr:isInRectangle(rectangles[i]) and
+            collisionBox.br:isInRectangle(rectangles[i]) do
+        self.x = self.x - 1
+        collisionBox = assignCollisionBox(self)
+        lastCollisionChecked = "right"
+        self.a.x = 0
+      end
+      --left checking
+      while collisionBox.tl:isInRectangle(rectangles[i]) and
+            collisionBox.bl:isInRectangle(rectangles[i]) do
+        self.x = self.x + 1
+        collisionBox = assignCollisionBox(self)
+        lastCollisionChecked = "left"
+        self.a.x = 0
+      end
+    end
+    --Grounded?
+    if lastCollisionChecked == "bottom" then
+      self.isGrounded = true
+    else
+      self.isGrounded = false
+    end
   end
 end
 

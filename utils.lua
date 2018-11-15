@@ -13,10 +13,20 @@ end
 
 function debug()
   if players[1].isGrounded then
-    love.graphics.print("TRUE")
+    love.graphics.print("True")
   else
     love.graphics.print("False")
   end
+end
+
+function assignCollisionBox(self)
+  local temp = {
+    tl = vectorO:new(self.x          + 1, self.y          + 1),
+    tr = vectorO:new(self.x + self.w - 1, self.y          + 1),
+    bl = vectorO:new(self.x          + 1, self.y + self.h - 1),
+    br = vectorO:new(self.x + self.w - 1, self.y + self.h - 1)
+  }
+  return temp
 end
 
 --/vectorO
