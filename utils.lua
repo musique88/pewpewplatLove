@@ -65,4 +65,28 @@ function vectorO:closestDistanceOut(rect, sensibility)
   return temp
 end
 
+function vectorO:closestRectangle()
+  local temp = ""
+  local tempPos = self
+  local tempDist = {t = 0, b = 0, r = 0, l = 0}
+  for i=1, #rectangles do
+    while not tempPos:isInRectangle(rectangle) or tempPos.x <= 2000 do
+      tempPos.x = tempPos.x + 1
+      tempDist.r = tempDist.r + 1
+    end
+    while not tempPos:isInRectangle(rectangle) or tempPos.x >= 0 do
+      tempPos.x = tempPos.x - 1
+      tempDist.l = tempDist.l + 1
+    end
+    while not tempPos:isInRectangle(rectangle) or tempPos.y <= 2000 do
+      tempPos.y = tempPos.y + 1
+      tempDist.b = tempDist.b + 1
+    end
+    while not tempPos:isInRectangle(rectangle) or tempPos.y >= 0 do
+      tempPos.y = tempPos.y - 1
+      tempDist.t = tempDist.t + 1
+    end
+  end
+end
+
 --vectorO/
