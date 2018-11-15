@@ -39,7 +39,7 @@ function vectorO:isInRectangle(rect)
          self.y >= rect.y and self.y <= rect.y + rect.h
 end
 
-function vectorO:closestDistanceOut(rect,sensibility)
+function vectorO:closestDistanceOut(rect, sensibility)
   local posIn = vectorO:new(self.x-rect.x,self.y-rect.y)
   local temp = vectorO:new(0,0)
   if posIn.x < sensibility then
