@@ -23,6 +23,8 @@ function assignCollisionBox(self)
   local temp = {
     tl = vectorO:new(self.x          + 1, self.y          + 1),
     tr = vectorO:new(self.x + self.w - 1, self.y          + 1),
+    ml = vectorO:new(self.x          + 1, self.y + self.step + 1),
+    mr = vectorO:new(self.x + self.w - 1, self.y + self.step + 1),
     bl = vectorO:new(self.x          + 1, self.y + self.h - 1),
     br = vectorO:new(self.x + self.w - 1, self.y + self.h - 1)
   }
