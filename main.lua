@@ -11,7 +11,7 @@ end
 
 function reset()
   rectangles = {}
-  players = {playerO:new(1,"pistol")}
+  players = {playerO:new(1,"pistol"), playerO:new(2,"pistol")}
   map()
   -- windowWidth, windowHeight = love.window.getMode()
 end
