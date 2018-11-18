@@ -1,13 +1,17 @@
 require "utils"
+require "bullet"
+
 playerO = {}
 playerO.__index = playerO
 
-function playerO:new(pnum,gunType,xSpeed,friction,maxXSpeed,maxYSpeed,grav,jumpSpeed,x,y,w,h,step)
+function playerO:new(pnum,gunType,xSpeed,friction,maxXSpeed,maxYSpeed,grav,
+  jumpSpeed,x,y,w,h,step)
   local newPlayer = {}
     newPlayer.x=x or love.math.random(1280)
     newPlayer.y=y or love.math.random(720)
-    newPlayer.w=w or 40 --love.math.random(50)
+    newPlayer.w=w or 45
     newPlayer.h=h or 60 --love.math.random(50)
+    newPlayer.d="right"
     newPlayer.step=step or newPlayer.h/2
     newPlayer.xSpeed = xSpeed or 0.5
     newPlayer.friction = friction or 1.3
@@ -24,8 +28,6 @@ function playerO:new(pnum,gunType,xSpeed,friction,maxXSpeed,maxYSpeed,grav,jumpS
 end
 
 function playerO:update()
-  local oldX = self.x
-  local oldY = self.y
   --inputs
   --player 1
   if self.pnum == 1 then
@@ -35,6 +37,7 @@ function playerO:update()
           self.a.x = self.a.x / self.friction
         end
         self.a.x = self.a.x - self.xSpeed
+        self.d = "left"
       end
     elseif love.keyboard.isDown("right") then
       if self.a.x <= self.maxSpeed.x then
@@ -42,6 +45,7 @@ function playerO:update()
           self.a.x = self.a.x / self.friction
         end
         self.a.x = self.a.x + self.xSpeed
+        self.d = "right"
       end
     else
       self.a.x = self.a.x/self.friction
@@ -59,6 +63,11 @@ function playerO:update()
         self.a.y = self.maxSpeed.y
       end
     end
+    --bullets
+    if love.keyboard.isDown("z") then
+      bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType)
+    end
+
   --player 2
   elseif self.pnum == 2 then
     if love.keyboard.isDown("a") then
@@ -106,6 +115,7 @@ function playerO:update()
   ]]
   local collisionBox = assignCollisionBox(self)
   local lastCollisionChecked = ""
+  --collision with rectangles
   for i=1, #rectangles do
     while collisionBox.ml:isInRectangle(rectangles[i])
     and collisionBox.mr:isInRectangle(rectangles[i])
@@ -175,6 +185,61 @@ function playerO:update()
       end
       collisionBox = assignCollisionBox(self)
       lastCollisionChecked = "top"
+    end
+  end
+  --collision with players
+  for i=1, #players do
+    if players[i].pnum ~= self.pnum then
+      local otherPlayerRectangle = rectangleO:newReturn(players[i].x,
+      players[i].y,players[i].w,players[i].h)
+      while collisionBox.ml:isInRectangle(otherPlayerRectangle)
+      and collisionBox.mr:isInRectangle(otherPlayerRectangle)
+      and collisionBox.bl:isInRectangle(otherPlayerRectangle)
+      and collisionBox.br:isInRectangle(otherPlayerRectangle)
+      and collisionBox.tl:isInRectangle(otherPlayerRectangle)
+      and collisionBox.tr:isInRectangle(otherPlayerRectangle) do
+        self.y = self.y - 1
+        self.a.y = 0
+        collisionBox = assignCollisionBox(self)
+        lastCollisionChecked = "bottom"
+      end
+      --3 and 4 and 5 and 6 up
+      while collisionBox.ml:isInRectangle(otherPlayerRectangle)
+      and collisionBox.mr:isInRectangle(otherPlayerRectangle)
+      and collisionBox.bl:isInRectangle(otherPlayerRectangle)
+      and collisionBox.br:isInRectangle(otherPlayerRectangle) do
+        self.y = self.y - 1
+        if self.a.y > 0 then
+          self.a.y = 0
+        end
+        collisionBox = assignCollisionBox(self)
+        lastCollisionChecked = "bottom"
+      end
+      --3 right
+      while collisionBox.ml:isInRectangle(otherPlayerRectangle)do
+        self.x = self.x + 1
+        self.a.x = 0
+        collisionBox = assignCollisionBox(self)
+        lastCollisionChecked = "left"
+      end
+      --4 left
+      while collisionBox.mr:isInRectangle(otherPlayerRectangle)do
+        self.x = self.x - 1
+        self.a.x = 0
+        collisionBox = assignCollisionBox(self)
+        lastCollisionChecked = "right"
+      end
+      --5 or 6 up
+      while collisionBox.bl:isInRectangle(otherPlayerRectangle)
+      or collisionBox.br:isInRectangle(otherPlayerRectangle) do
+        self.y = self.y - 1
+        self.a.y = -self.jumpSpeed
+        if self.a.y > 0 then
+          self.a.y = 0
+        end
+        collisionBox = assignCollisionBox(self)
+        lastCollisionChecked = "bottom"
+      end
     end
   end
   --Grounded?

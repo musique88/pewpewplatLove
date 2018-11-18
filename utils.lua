@@ -17,6 +17,7 @@ function debug()
   else
     love.graphics.print("False")
   end
+  love.graphics.print(#bullets,30)
 end
 
 function assignCollisionBox(self)
