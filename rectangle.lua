@@ -14,12 +14,12 @@ function rectangleO:newReturn(x,y,w,h,type)
 end
 
 function rectangleO:draw(color)
-  love.graphics.setColor(1,0,0)
+  if self.type == "normal" then
+    love.graphics.setColor(1,0,0)
+  elseif self.type == "bouncing" then
+    love.graphics.setColor(0.5,0,0)
+  end
   love.graphics.rectangle("fill",
-  -- self.x*windowWidth,
-  -- self.y*windowHeight,
-  -- self.w*windowWidth,
-  -- self.h*windowHeight
   self.x,self.y,self.w,self.h
   )
 end

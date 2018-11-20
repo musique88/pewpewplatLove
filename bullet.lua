@@ -11,6 +11,7 @@ function bulletO:new(x,y,d,type,id)
   newBullet.d=d
   newBullet.type=type
   newBullet.id=id
+  newBullet.timer=0
   setmetatable(newBullet,bulletO)
   table.insert(bullets,newBullet)
 end
@@ -24,7 +25,7 @@ function bulletO:update()
       self.x = self.x - speed
     end
     for i=1, #rectangles do
-      if vectorO:new(self.x, self.y):isInRectangle(rectangles[i]) then
+      if rectangleRectanglesCollision(rectangles[i], rectangleO:newReturn(self.x,self.y,4,4)) then
         table.insert(deadBullets, self)
       end
     end

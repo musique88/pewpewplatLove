@@ -8,30 +8,34 @@ function love.load()
   love.window.setMode(1280,720)
   --array resets
   reset()
-end
-
-function reset()
-  rectangles = {}
-  bullets = {}
-  players = {playerO:new(1,"pistol"), playerO:new(2,"pistol")}
   map()
-  -- windowWidth, windowHeight = love.window.getMode()
 end
 
-function love.update()
+function love.update(dt)
   escape()
-  deadBullets = {}
-  for i=1, #players do
-    players[i]:update()
-  end
-  for i=1, #bullets do
-    bullets[i]:update()
-  end
   if #deadBullets > 0 then
     for i = 0, #deadBullets do
       deleteFromTable(bullets,deadBullets[i])
     end
+    deadBullets = {}
   end
+  for i=1, #players do
+    players[i]:update()
+  end
+  if players[1].health<= 0 then
+    previousWinner = 2
+    roundTimer = -4
+    showDeadScreen = true
+  end
+  if players[2].health<= 0 then
+    previousWinner = 1
+    roundTimer = -4
+    showDeadScreen = true
+  end
+  for i=1, #bullets do
+    bullets[i]:update()
+  end
+  roundTimer = roundTimer+dt
 end
 
 function love.keypressed(key)
@@ -50,5 +54,6 @@ function love.draw()
   for i=1, #players do
     players[i]:draw()
   end
+  deadScreen()
   debug()
 end

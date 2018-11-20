@@ -12,12 +12,37 @@ function escape()
 end
 
 function debug()
-  if players[1].isGrounded then
-    love.graphics.print("True")
-  else
-    love.graphics.print("False")
+  love.graphics.setNewFont(12)
+  love.graphics.setColor(1,1,1)
+  love.graphics.print(roundTimer,0,0)
+  love.graphics.print(#bullets,200)
+end
+
+function deadScreen()
+  if showDeadScreen then
+    map()
+      players = {playerO:new(1,"pistol",-1000,-1000), playerO:new(2,"pistol",-1000,-1000)}
+    love.graphics.setNewFont(20)
+    if roundTimer < -3 then
+      love.graphics.print("Player "..previousWinner.." won!",640,360)
+    elseif roundTimer < -2 then
+      love.graphics.print("3",640,360)
+    elseif roundTimer < -1 then
+      love.graphics.print("2",640,360)
+    elseif roundTimer < 0 then
+      love.graphics.print("1",640,360)
+    else
+      reset()
+    end
   end
-  love.graphics.print(#bullets,30)
+end
+
+function reset()
+  bullets = {}
+  players = {playerO:new(1,"pistol"), playerO:new(2,"pistol")}
+  deadBullets={}
+  roundTimer=0
+  showDeadScreen = false
 end
 
 function assignCollisionBox(self)
@@ -40,6 +65,14 @@ function deleteFromTable(array, object)
       return
     end
   end
+end
+
+function rectangleRectanglesCollision(r1, r2)
+  --code inspired from https://love2d.org/wiki/BoundingBox.lua
+  return r1.x < r2.x+r2.w and
+         r2.x < r1.x+r1.w and
+         r1.y < r2.y+r2.h and
+         r2.y < r1.y+r1.h
 end
 
 --/vectorO
@@ -77,29 +110,4 @@ function vectorO:closestDistanceOut(rect, sensibility)
   end
   return temp
 end
-
-function vectorO:closestRectangle()
-  local temp = ""
-  local tempPos = self
-  local tempDist = {t = 0, b = 0, r = 0, l = 0}
-  for i=1, #rectangles do
-    while not tempPos:isInRectangle(rectangle) or tempPos.x <= 2000 do
-      tempPos.x = tempPos.x + 1
-      tempDist.r = tempDist.r + 1
-    end
-    while not tempPos:isInRectangle(rectangle) or tempPos.x >= 0 do
-      tempPos.x = tempPos.x - 1
-      tempDist.l = tempDist.l + 1
-    end
-    while not tempPos:isInRectangle(rectangle) or tempPos.y <= 2000 do
-      tempPos.y = tempPos.y + 1
-      tempDist.b = tempDist.b + 1
-    end
-    while not tempPos:isInRectangle(rectangle) or tempPos.y >= 0 do
-      tempPos.y = tempPos.y - 1
-      tempDist.t = tempDist.t + 1
-    end
-  end
-end
-
 --vectorO/
