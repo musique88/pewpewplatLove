@@ -64,10 +64,15 @@ function playerO:update()
       end
     end
     --bullets
+    local canShoots = true
     if love.keyboard.isDown("z") then
-      bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType)
+      if canShoot  then
+        bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
+        canShoot = false
+      end
+    else
+      canShoot = true
     end
-
   --player 2
   elseif self.pnum == 2 then
     if love.keyboard.isDown("a") then

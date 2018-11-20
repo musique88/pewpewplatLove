@@ -1,14 +1,14 @@
 rectangleO = {}
 rectangleO.__index = rectangleO
 
-function rectangleO:new(x,y,w,h)
-  local newRectangle = {x=x,y=y,w=w,h=h}
+function rectangleO:new(x,y,w,h,type)
+  local newRectangle = {x=x,y=y,w=w,h=h,type=type or "normal"}
   setmetatable(newRectangle, rectangleO)
   table.insert(rectangles, newRectangle)
 end
 
-function rectangleO:newReturn(x,y,w,h)
-  local newRectangle = {x=x,y=y,w=w,h=h}
+function rectangleO:newReturn(x,y,w,h,type)
+  local newRectangle = {x=x,y=y,w=w,h=h,type=type or "normal"}
   setmetatable(newRectangle, rectangleO)
   return newRectangle
 end

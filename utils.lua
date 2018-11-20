@@ -32,6 +32,16 @@ function assignCollisionBox(self)
   return temp
 end
 
+function deleteFromTable(array, object)
+  local arrayLength = #array
+  for i=1, arrayLength do
+    if array[i] == object then
+      table.remove(array, i)
+      return
+    end
+  end
+end
+
 --/vectorO
 
 vectorO = {}
