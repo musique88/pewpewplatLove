@@ -26,11 +26,13 @@ function love.update(dt)
     previousWinner = 2
     roundTimer = -4
     showDeadScreen = true
+    nextMapPicked = true
   end
   if players[2].health<= 0 then
     previousWinner = 1
     roundTimer = -4
     showDeadScreen = true
+    nextMapPicked = true
   end
   for i=1, #bullets do
     bullets[i]:update()

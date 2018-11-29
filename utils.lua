@@ -20,7 +20,10 @@ end
 
 function deadScreen()
   if showDeadScreen then
-    map()
+    if nextMapPicked then
+      map()
+      nextMapPicked = false
+    end
       players = {playerO:new(1,"pistol",-1000,-1000), playerO:new(2,"pistol",-1000,-1000)}
     love.graphics.setNewFont(20)
     if roundTimer < -3 then
