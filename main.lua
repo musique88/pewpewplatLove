@@ -24,13 +24,13 @@ function love.update(dt)
   end
   if players[1].health<= 0 then
     previousWinner = 2
-    roundTimer = -4
+    roundTimer = -2
     showDeadScreen = true
     nextMapPicked = true
   end
   if players[2].health<= 0 then
     previousWinner = 1
-    roundTimer = -4
+    roundTimer = -2
     showDeadScreen = true
     nextMapPicked = true
   end

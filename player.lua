@@ -24,7 +24,33 @@ function playerO:new(pnum,gunType,x,y)
       newPlayer.health = 10
       newPlayer.w=45
       newPlayer.h=60
-      newPlayer.fireRate=10
+      newPlayer.fireRate=30
+      newPlayer.shootTimer=600
+    end
+    if newPlayer.gunType=="shotgun" then
+      newPlayer.step=newPlayer.h/2
+      newPlayer.xSpeed = 0.2
+      newPlayer.friction = 1.1
+      newPlayer.maxSpeed = vectorO:new(10, 50)
+      newPlayer.grav = 0.9
+      newPlayer.jumpSpeed = 15
+      newPlayer.health = 10
+      newPlayer.w=45
+      newPlayer.h=70
+      newPlayer.fireRate=60
+      newPlayer.shootTimer=600
+    end
+    if newPlayer.gunType=="smg" then
+      newPlayer.step=newPlayer.h/2
+      newPlayer.xSpeed = 0.4
+      newPlayer.friction = 2
+      newPlayer.maxSpeed = vectorO:new(10, 50)
+      newPlayer.grav = 0.9
+      newPlayer.jumpSpeed = 20
+      newPlayer.health = 10
+      newPlayer.w=30
+      newPlayer.h=45
+      newPlayer.fireRate=2
       newPlayer.shootTimer=600
     end
     newPlayer.maxHealth = newPlayer.health
@@ -34,6 +60,35 @@ function playerO:new(pnum,gunType,x,y)
     newPlayer.a = vectorO:new(0,0)
   setmetatable(newPlayer, playerO)
   return newPlayer
+end
+
+function playerO:shoot()
+  if self.canShoot and self.shootTimer>=self.fireRate then
+    if self.gunType == "pistol" then
+      bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
+      self.shootTimer = 0
+    elseif self.gunType == "shotgun" then
+      bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
+      bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
+      bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
+      bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
+      bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
+      self.shootTimer = 0
+      if self.d == "right" then
+        self.a.x = self.a.x - 10
+      else
+        self.a.x = self.a.x + 10
+      end
+    elseif self.gunType == "smg" then
+      bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
+      self.shootTimer = 0
+      if self.d == "right" then
+        self.a.x = self.a.x - 5
+      else
+        self.a.x = self.a.x + 5
+      end
+    end
+  end
 end
 
 function playerO:update()
@@ -57,7 +112,7 @@ function playerO:update()
         self.d = "right"
       end
     else
-      self.a.x = self.a.x/self.friction
+      self.a.x = self.a.x / self.friction
     end
     if self.isGrounded then
       if love.keyboard.isDown("up") and self.canJump then
@@ -74,16 +129,7 @@ function playerO:update()
     end
     --bullets
     if love.keyboard.isDown("m") then
-      if self.canShoot and self.shootTimer>=self.fireRate then
-        if self.gunType == "pistol" then
-          bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
-        end
-        if self.gunType == "shotgun" then
-        self.canShoot = false
-        self.shootTimer = 0
-      end
-    else
-      self.canShoot = true
+      self:shoot()
     end
   --player 2
   elseif self.pnum == 2 then
@@ -121,18 +167,15 @@ function playerO:update()
     end
 
     --bullets
-    self.canShoots = true
     if love.keyboard.isDown("lshift") then
-      if self.canShoot and self.shootTimer>=self.fireRate then
-        bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
-        self.canShoot = false
-        self.shootTimer = 0
-      end
-    else
-      self.canShoot = true
+      self:shoot()
     end
   end
   self.shootTimer=self.shootTimer + 1
+
+  if self.shootTimer >= self.fireRate then
+    self.shootTimer = self.fireRate
+  end
 
   --actually moving
   self.x = self.x + self.a.x
@@ -248,11 +291,11 @@ function playerO:update()
   if #bullets > 0 then
     for i=1, #bullets do
       if bullets[i] ~= nil then
-        if bullets[i].type=="pistol" and bullets[i].id~=self.pnum then
+        if bullets[i].id~=self.pnum then
           if rectangleRectanglesCollision(rectangleO:newReturn(bullets[i].x,bullets[i].y,4,4),
           rectangleO:newReturn(self.x,self.y,self.w,self.h))then
             table.insert(deadBullets,bullets[i])
-            self.health = self.health-1
+            self.health = self.health - bullets[i].dmg
           end
         end
       end
@@ -339,4 +382,5 @@ function playerO:draw()
   love.graphics.rectangle("fill",self.x,self.y,self.w,self.h)
   love.graphics.setColor(1,0.1,0.1)
   love.graphics.rectangle("fill",self.x,self.y-10,(self.health/self.maxHealth)*self.w,7)
+  love.graphics.rectangle("fill",self.x,self.y-20,(self.shootTimer/self.fireRate)*self.w,7)
 end

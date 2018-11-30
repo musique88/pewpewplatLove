@@ -24,13 +24,13 @@ function deadScreen()
       map()
       nextMapPicked = false
     end
-      players = {playerO:new(1,"pistol",-1000,-1000), playerO:new(2,"pistol",-1000,-1000)}
+      players = {playerO:new(1,"shotgun",-1000,-1000), playerO:new(2,"pistol",-1000,-1000)}
     love.graphics.setNewFont(20)
-    if roundTimer < -3 then
+    if roundTimer < -1.5 then
       love.graphics.print("Player "..previousWinner.." won!",640,360)
-    elseif roundTimer < -2 then
-      love.graphics.print("3",640,360)
     elseif roundTimer < -1 then
+      love.graphics.print("3",640,360)
+    elseif roundTimer < -0.5 then
       love.graphics.print("2",640,360)
     elseif roundTimer < 0 then
       love.graphics.print("1",640,360)
@@ -42,7 +42,7 @@ end
 
 function reset()
   bullets = {}
-  players = {playerO:new(1,"pistol"), playerO:new(2,"pistol")}
+  players = {playerO:new(1,"shotgun"), playerO:new(2,"smg")}
   deadBullets={}
   roundTimer=0
   showDeadScreen = false
