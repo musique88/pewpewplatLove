@@ -1,5 +1,6 @@
 require "utils"
 require "bullet"
+require "guns"
 
 playerO = {}
 playerO.__index = playerO
@@ -74,7 +75,10 @@ function playerO:update()
     --bullets
     if love.keyboard.isDown("m") then
       if self.canShoot and self.shootTimer>=self.fireRate then
-        bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
+        if self.gunType == "pistol" then
+          bulletO:new(self.x+self.w/2,self.y+self.h/2,self.d,self.gunType,self.pnum)
+        end
+        if self.gunType == "shotgun" then
         self.canShoot = false
         self.shootTimer = 0
       end
